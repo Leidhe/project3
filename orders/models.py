@@ -7,12 +7,12 @@ class Dish(models.Model):
     name = models.CharField(max_length = 25)
     size = models.CharField(max_length = 10)
     type = models.CharField(max_length = 25)
-    image = models.ImageField(upload_to='images/% Y/% m/% d/', blank=True)
+    image = models.ImageField(upload_to='images/upload', blank=True)
     price = models.FloatField()
     num_toppings = models.IntegerField(default=0)
 
     def __str__(self):
-        return f'{self.id}. {self.type}. {self.name}, {self.size}, {self.price}'
+        return f'{self.id}. {self.type}. {self.name}, {self.size}, {self.price}, {self.image}'
 
 class Addition(models.Model):
     name = models.CharField(max_length = 25)
