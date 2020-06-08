@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<title>Register</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	{% load static %}
+	<!--===============================================================================================-->
+	<link rel="icon" type="image/png" href="{% static 'images/register/icons/favicon.ico' %}" />
+	<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}">
+	<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css"
+		href="{% static 'fonts/register/font-awesome-4.7.0/css/font-awesome.min.css' %}">
+	<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css"
+		href="{% static 'fonts/register/Linearicons-Free-v1.0.0/icon-font.min.css' %}">
+	<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css"
+		href="{% static 'fonts/register/iconic/css/material-design-iconic-font.min.css' %}">
+	<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="{% static 'vendor/animate/animate.css' %}">
+	<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="{% static 'vendor/css-hamburgers/hamburgers.min.css' %}">
+	<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="{% static 'vendor/animsition/css/animsition.min.css' %}">
+	<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="{% static 'vendor/select2/select2.min.css' %}">
+	<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="{% static 'vendor/daterangepicker/daterangepicker.css' %}">
+	<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="{% static 'css/register/util.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'css/register/main.css' %}">
+	<!--===============================================================================================-->
+</head>
+
+<body style="background-color: #999999;">
+	<div class="limiter">
+		<div class="container-login100">
+			<div class="login100-more" style="background-image: url( {% static 'images/register/pizza-register.jpg' %} );">
+			</div>
+			<div class="wrap-login100 p-l-50 p-r-50 p-t-72 p-b-50">
+				<form class="login100-form validate-form" action="{% url 'register' %}" method='POST'>
+					{% csrf_token %}
+					<span class="login100-form-title p-b-59">
+						Sign Up
+					</span>
+					{% if error_message %}
+					<div class="alert alert-danger" role="alert">
+						<p>{{error_message}}</p>
+					</div>
+					{% endif %}
+
+
+					{% if form.errors %}
+					<!-- Error messaging -->
+					<div class="alert alert-danger" role="alert">
+						<ul>
+							{% for field in form %}
+							{% if field.errors %}<li>{{ field.label }}: {{ field.errors|striptags }}</li>{% endif %}
+							{% endfor %}
+						</ul>
+					</div>
+					<!-- /Error messaging -->
+					{% endif %}
+
+					<div class="wrap-input100">
+						<label for="{{ form.username.id_for_label }}"
+							class="control-label text-right">Username<span>*</span>:</label>
+						<div>
+							{{ form.username }}
+						</div>
+					</div>
+					<small style="color: grey; margin-top: -10%">{{ form.username.help_text|safe }}</small>
+
+					<div class="wrap-input100">
+						<label for="{{ form.email.id_for_label }}" class="control-label text-right">Email<span
+								class="text-red">*</span>:</label>
+						<div>
+							{{ form.email }}
+						</div>
+						<span class="focus-input100"></span>
+					</div>
+					
+					<small style="color: grey; margin-top: -10%">{{ form.email.help_text|safe }}</small>
+
+					<div class="wrap-input100">
+						<label for="{{ form.email.id_for_label }}" class="control-label text-right">First name:</label>
+						<div>
+							{{ form.firstname }}
+						</div>
+						<span class="focus-input100"></span>
+					</div>
+
+					<div class="wrap-input100">
+						<label for="{{ form.email.id_for_label }}" class="control-label text-right">Last name:</label>
+						<div>
+							{{ form.lastname }}
+						</div>
+						<span class="focus-input100"></span>
+					</div>
+
+					<div class="wrap-input100">
+						<label for="{{ form.password1.id_for_label }}" class="control-label text-right">Password<span
+								class="text-red">*</span>:</label>
+						<div>
+							{{ form.password1 }}
+						</div>
+						<span class="focus-input100"></span>
+					</div>
+					<small style="color: grey; margin-top: -10%">{{ form.password1.help_text|safe }}</small>
+
+					<div class="wrap-input100">
+						<label for="{{ form.password2.id_for_label }}" class="control-label text-right">Repeat
+							Password<span class="text-red">*</span>:</label>
+						<div>
+							{{ form.password2 }}
+						</div>
+						<span class="focus-input100"></span>
+					</div>
+					<small style="color: grey; margin-top: -10%">{{ form.password2.help_text|safe }}</small>
+
+
+					<div class="container-login100-form-btn">
+						<div class="wrap-login100-form-btn">
+							<div class="login100-form-bgbtn"></div>
+							<button class="login100-form-btn" type="submit">
+								Sign Up
+							</button>
+						</div>
+
+						<a href="{% url 'sign_in' %}" class="dis-block txt3 hov1 p-r-30 p-t-10 p-b-10 p-l-30">
+							Log in
+							<i class="fa fa-long-arrow-right m-l-5"></i>
+						</a>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+
+
+	<!--===============================================================================================-->
+	<script src="{% static 'vendor/jquery/jquery-3.2.1.min.js' %}"></script>
+	<!--===============================================================================================-->
+	<script src="{% static 'vendor/animsition/js/animsition.min.js' %}"></script>
+	<!--===============================================================================================-->
+	<script src="{% static 'vendor/bootstrap/js/popper.js' %}"></script>
+	<script src="{% static 'vendor/bootstrap/js/bootstrap.min.js' %}"></script>
+	<!--===============================================================================================-->
+	<script src="{% static 'vendor/select2/select2.min.js' %}"></script>
+	<!--===============================================================================================-->
+	<script src="{% static 'vendor/daterangepicker/moment.min.js' %}"></script>
+	<script src="{% static 'vendor/daterangepicker/daterangepicker.js' %}"></script>
+	<!--===============================================================================================-->
+	<script src="{% static 'vendor/countdowntime/countdowntime.js' %}"></script>
+	<!--===============================================================================================-->
+	<script src="{% static 'js/register/main.js'"></script>
+
+</body>
+</html>
