@@ -3,75 +3,55 @@ from django.contrib.auth.models import User
 
 
 # Create your models here.
-class Dish(models.Model):
-    name = models.CharField(max_length = 25)
-    size = models.CharField(max_length = 10)
-    type = models.CharField(max_length = 25)
-    image = models.ImageField(upload_to='images/upload', blank=True)
-    price = models.FloatField()
+
+class Category(models.Model):
+    name = models.CharField(max_length=64)
+
+    def __str__(self):
+        return f"{self.name}"
+    
+class MenuItem1(models.Model):
+    #Pizzas, Subs and Dinner Platters
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="menuitem1_category")
+    name = models.CharField(max_length=64)
+    price_small = models.DecimalField(max_digits=10, decimal_places=2)
+    price_large = models.DecimalField(max_digits=10, decimal_places=2)
     num_toppings = models.IntegerField(default=0)
 
     def __str__(self):
-        return f'{self.id}. {self.type}. {self.name}, {self.size}, {self.price}, {self.image}'
+        return f"{self.name} -{self.category}"    
 
-class Addition(models.Model):
-    name = models.CharField(max_length = 25)
-    price = models.FloatField()
-    dish = models.ManyToManyField(Dish)
+class MenuItem2(models.Model):
+    #Pasta and Salads
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="menuitem2_category")
+    name = models.CharField(max_length=64)
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+    num_toppings = models.IntegerField(default=0)
 
     def __str__(self):
-        return f'{self.id}. {self.name}, +{self.price}'
+        return f"{self.name} -{self.category}"    
 
 
 class Topping(models.Model):
-    name = models.CharField(max_length = 25)
+    name = models.CharField("Topping",max_length=25)
 
     def __str__(self):
-        return f'{self.id}. {self.name}'
+        return f"{self.name}"
 
-class OrderDish(models.Model):
-    dish = models.ForeignKey(Dish, on_delete=models.CASCADE)
+class Sub_Extra(models.Model):
+    name = models.CharField(max_length=25)
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+    subs = models.ManyToManyField(MenuItem1)
+
+    def __str__(self):
+        return f"{self.name}"
+
+class OrderItem(models.Model):
+    item = models.ForeignKey(MenuItem1, on_delete=models.CASCADE, related_name="orderitem_menuitem1")
+    item2 = models.ForeignKey(MenuItem2, on_delete=models.CASCADE, related_name="orderitem_menuitem2")
     toppings = models.ManyToManyField(Topping)
-    additions = models.ManyToManyField(Addition)
-    cost = models.FloatField(default=0)
+    subs_extra = models.ManyToManyField(Sub_Extra)
 
     def __str__(self):
-        string = f'Dish {self.dish.name}'
-        if self.topping.count > 0:
-            string += f'Toppings: '
-            for topping in self.toppings.all():
-                string += f'{topping.name}'
-        if self.additions.count > 0:
-            string += f'Additions: '
-            for addition in self.additions.all():
-                string += f'{addition.name}- +{addition.price}'
-
-        string += f' Price {self.total_price}'
-        return string
-
-    def total_price(self):
-        total = self.dish.price
-        if self.additions.count > 0:
-            for addition in self.additions.all():
-                total += self.addition.price
-        
-        return total
-
-
-
-class Order(models.Model):
-    owner = models.ForeignKey(User, on_delete=models.CASCADE)
-    order_dishes = models.ManyToManyField(OrderDish)
-    date_ordered = models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        string = f' Customer {self.owner}'
-        string += f'Dishes:'
-        for order_dish in self.order_dishes.all():
-            string += f'{order_dish.__str__}:'
-
-
-    
-    
-
+        return f"{self.item}"
 
