@@ -23,10 +23,25 @@ def menu(request):
     }
     return render(request, "orders/menu.html", context)
 
-def contact(request):
-    return render(request, "orders/contact.html")
-
 def cart(request):
     return render(request, "orders/cart.html")
 
+def product(request, product_id):
+    item = MenuItem1.objects.get(id=product_id)
+    print(item)
+    if item.category.name == 'Regular Pizza' or  item.category.name == 'Silician Pizza':
+        extras = Topping.objects.all()
+        title = "Choose your toppings"
+    elif item.category.name == 'Subs':
+        extras = Sub_Extra.objects.filter(subs__id = item.id)
+        title = "Choose any extra"
+    else:
+        title = None
+        extras=[]
+    context = {
+        'item': item,
+        'extras': extras,
+        'title': title
+    }
+    return render(request, "orders/product-single.html", context)
 
