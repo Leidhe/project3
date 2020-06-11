@@ -22,124 +22,202 @@
 		</div>
 	</div>
 </section>
+<form action="{% url 'add_to_cart' item.id %}" method="POST">
+	{% csrf_token %}
 
-<section class="ftco-section">
-	<div class="container">
-		<div class="row">
-			<div class="col-lg-6 mb-5 ftco-animate">
-				<a href="{{item.image.url}}" class="image-popup"><img src="{{item.image.url}}" class="img-fluid"
-						alt="Image"></a>
-			</div>
-			<div class="col-lg-6 product-details pl-md-5 ftco-animate">
-				<h3>{{item.name}}</h3>
-				{% if item.price_small and item.price_large %}
-				<h4>
-					<span style="color: #e3a02b;">Small: {{item.price_small}}</span>
-				</h4>
-				<h4>
-					<span style="color: #e3a02b;">Large: {{item.price_large}}</span>
+	<section class="ftco-section">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-6 mb-5 ftco-animate">
+					<a href="{{item.image.url}}" class="image-popup"><img src="{{item.image.url}}" class="img-fluid"
+							alt="Image"></a>
+				</div>
+				<div class="col-lg-6 product-details pl-md-5 ftco-animate">
+					<h3>{{item.name}}</h3>
+					{% if item.price_small and item.price_large %}
+					<h4>
+						<span style="color: #e3a02b;">Small: {{item.price_small}}</span>
+					</h4>
+					<h4>
+						<span style="color: #e3a02b;">Large: {{item.price_large}}</span>
 
-				</h4>
-				{% elif item.price_small %}
-				<h4>
-					<span style="color: #e3a02b;">Price: {{item.price_small}}</span>
-				</h4>
-				{% else %}
-				<h4>
-					<span style="color: #e3a02b;">Price: {{item.price_large}}</span>
-				</h4>
+					</h4>
+					{% elif item.price_small %}
+					<h4>
+						<span style="color: #e3a02b;">Price: {{item.price_small}}</span>
+					</h4>
+					{% else %}
+					<h4>
+						<span style="color: #e3a02b;">Price: {{item.price_large}}</span>
+					</h4>
 
-				{% endif %}
-				<p>A small river named Duden flows by their place and supplies it with the necessary regelialia. It is a
-					paradisematic country, in which roasted parts of sentences fly into your mouth.</p>
-				<p>On her way she met a copy. The copy warned the Little Blind Text, that where it came from it would
-					have been rewritten a thousand times and everything that was left from its origin would be the word
-					"and" and the Little Blind Text should turn around and return to its own, safe country. But nothing
-					the copy said could convince her and so it didn’t take long until a few insidious Copy Writers
-					ambushed her, made her drunk with Longe and Parole and dragged her into their agency, where they
-					abused her for their.
-				</p>
-				<div class="row mt-4">
-					<div class="col-md-6">
-						<div class="form-group d-flex">
-							<div class="select-wrap">
-								<div class="icon"><span class="ion-ios-arrow-down"></span></div>
-								<select name="" id="" class="form-control">
-									{% if item.price_small and item.price_large %}
-									<option value="">Small: {{item.price_small}} </option>
-									<option value="">Large: {{item.price_large}}</option>
-									{% elif item.price_small %}
-									<option value="">Price: {{item.price_small}} </option>
-									{% else %}
-									<option value="">Large: {{item.price_large}}</option>
-									{% endif %}
-								</select>
+					{% endif %}
+					<p>A small river named Duden flows by their place and supplies it with the necessary regelialia. It
+						is a
+						paradisematic country, in which roasted parts of sentences fly into your mouth.</p>
+					<p>On her way she met a copy. The copy warned the Little Blind Text, that where it came from it
+						would
+						have been rewritten a thousand times and everything that was left from its origin would be the
+						word
+						"and" and the Little Blind Text should turn around and return to its own, safe country. But
+						nothing
+						the copy said could convince her and so it didn’t take long until a few insidious Copy Writers
+						ambushed her, made her drunk with Longe and Parole and dragged her into their agency, where they
+						abused her for their.
+					</p>
+					<div class="row mt-4">
+						<div class="col-md-6">
+							<div class="form-group d-flex">
+								<div class="select-wrap">
+									<div class="icon"><span class="ion-ios-arrow-down"></span></div>
+									<select name="select-size" id="select-size" class="form-control">
+										{% if item.price_small and item.price_large %}
+										<option value="Small">Small: {{item.price_small}} </option>
+										<option value="Large">Large: {{item.price_large}}</option>
+										{% elif item.price_small %}
+										<option value="Unique">Price: {{item.price_small}} </option>
+										{% else %}
+										<option value="Unique">Price: {{item.price_large}}</option>
+										{% endif %}
+									</select>
+								</div>
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-	</div>
-</section>
-{% if extras %}
-<section class="ftco-section ftco-cart">
-	<div class="container">
-		<div class="row">
-			<div class="col-md-12 ftco-animate">
-				<div class="cart-list">
-					<h3>{{ title }}</h3>
-					<table class="greyGridTable">
-						<thead>
-							<tr>
-								<th>Name</th>
-								{% if item.category.name == "Subs" %}
-								<th>Price</th>
-								{% endif %}
-							</tr>
-						</thead>
-						<tbody>
-							{% for extra in extras %}
-							<tr>  
-								{% if item.category.name != "Subs" %}
-								<td>
-									<label style="color: white;"><input type="checkbox" value="" style="padding-left: 45%; margin-right: 10px;">{{extra.name}}</label>
-								</td>
-								{% endif %}
-								{% if item.category.name == "Subs" %}
-								<td style="padding-left: 23%;">
-									<label style="color: white;"><input type="checkbox" value="" style="margin-right: 10px;">{{extra.name}}</label>
-								</td>
-								<td style="padding-left: 20%;">{{extra.price}}</td>
-								{% endif %}
-							</tr><!-- END TR-->
-							{% endfor %}
-						</tbody>
-						{% if item.category.name == "Subs" %}
-						<tfoot>
-							<td>Total</td>
-							<td>sumtotal</td>
-						</tfoot>
-						{% endif %}
-					</table>
+	</section>
+	{% if extras %}
+	<section class="ftco-section ftco-cart">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-12 ftco-animate">
+					<div>
+						<h3>{{ title }}</h3>
+						<table class="greyGridTable">
+							<thead>
+								<tr>
+									<th>Name</th>
+									{% if item.category.name == "Subs" %}
+									<th>Price</th>
+									{% endif %}
+								</tr>
+							</thead>
+							<tbody>
+								{% for extra in extras %}
+								<tr>
+									{% if item.category.name != "Subs" %}
+									<td style="padding-left: 45%;">
+
+										<label style="color: white;"><input type="checkbox" value="{{extra.name}}"
+												name="checkbox-topping"
+												style="margin-right: 10px;">{{extra.name}}</label>
+
+									</td>
+									{% endif %}
+									{% if item.category.name == "Subs" %}
+									<td style="padding-left: 23%;">
+										<label style="color: white;"><input type="checkbox" value="{{extra.name}}"
+												name="checkbox-subs" style="margin-right: 10px;">{{extra.name}}</label>
+									</td>
+									<td style="color: black; text-align: center;">{{extra.price}}</td>
+									{% endif %}
+								</tr>
+								{% endfor %}
+							</tbody>
+							{% if item.category.name == "Subs" %}
+							<tfoot>
+								<td>Total</td>
+								<td style="color: black">
+									<span id="total"></span></td>
+							</tfoot>
+							{% endif %}
+						</table>
+					</div>
 				</div>
 			</div>
 		</div>
-	</div>
-</section>
-{% endif %}
-<p style ="text-align: right; margin-right: 15%;"><a href="cart.html" class="btn btn-primary py-3 px-5">Add to Cart</a></p>
-
+	</section>
+	{% endif %}
+	<p style="text-align: right; margin-right: 15%;"><button disabled = "true" type="submit" id="add_cart" class="btn btn-primary py-3 px-5">Add to
+			Cart</button>
+	</p>
+</form>
 
 
 {% endblock %}
 {% block scripts %}
 <script type="text/javascript">
-	var num_max;
-	document.addEventListener("DOMContentLoaded", function (event) {
-		num_max = {{ item.num_toppings }
-	};
-	document.getElementById('prueba').innerHTML = num_max;
+
+	var subs_dict = {};
+	{% if item.category.name == "Subs" %}
+		{% for extra in extras %}
+		subs_dict["{{extra.name}}"] = {{ extra.price }};
+		{% endfor %}
+	{% endif %}
+
+	var num_max_toppings = {{ item.num_toppings }}
+	$(document).ready(function () {
+		
+		if (({{ item.num_toppings }}) == 0) {
+			$('#add_cart').attr("disabled", false);
+		}
+		var value = $("#select-size option:selected").text().split(" ");
+		var total = parseFloat(value[1]);
+		$("#total").text(total);
+
+
+		$("input[name=checkbox-topping]").change(function () {
+			if ($("input[name=checkbox-topping]:checked").length == num_max_toppings) {
+				console.log($("input[name=checkbox-topping]:checked").length);
+				$("input[name=checkbox-topping]").not(':checked').prop('disabled', true);
+				$('#add_cart').attr("disabled", false);}
+
+			else if($("input[name=checkbox-topping]:checked").length == num_max_toppings){
+				$("input[name=checkbox-topping]").not(':checked').prop('disabled', true);
+				$('#add_cart').attr("disabled", false);
+
+			} else {
+				$("input[name=checkbox-topping]").prop('disabled', false)
+				$('#add_cart').attr("disabled", true);
+
+			}
+			
+
+		});
+		$('input[name=checkbox-subs]').change(function () {
+			var value = $("#select-size option:selected").text().split(" ");
+			console.log(value)
+			var total = parseFloat(value[1]);
+
+			/*$('input[name=checkbox-subs]:checked').each(function () {
+				total += parseFloat($(this).val());
+				console.log(total);
+			});
+			$("#total").text(total);*/
+
+			$('input[name=checkbox-subs]:checked').each(function () {
+				total += subs_dict[$(this).val()]
+			});
+			$("#total").text(total);
+
+		});
+
+		$('select[id=select-size]').change(function () {
+			var value = $("#select-size option:selected").text().split(" ");
+			var total = parseFloat(value[1]);
+
+			$('input[name=checkbox-subs]:checked').each(function () {
+				total += subs_dict[$(this).val()]
+			});
+
+			$("#total").text(total);
+
+		});
+
 	});
+
+
 </script>
 {% endblock %}

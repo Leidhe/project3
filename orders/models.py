@@ -35,11 +35,34 @@ class Sub_Extra(models.Model):
     def __str__(self):
         return f"{self.name}"
 
+
+
+
 class OrderItem(models.Model):
+    user = models.ForeignKey(User,on_delete=models.CASCADE, related_name="orderitem_user")
     item = models.ForeignKey(MenuItem1, on_delete=models.CASCADE, related_name="orderitem_menuitem1")
-    toppings = models.ManyToManyField(Topping)
-    subs_extra = models.ManyToManyField(Sub_Extra)
+    size = models.CharField(max_length=64)
+    toppings = models.ManyToManyField(Topping, related_name="orderitem_toppings", blank="True")
+    subs_extra = models.ManyToManyField(Sub_Extra, related_name="orderitem_subsextras", blank="True")
+    price = models.FloatField(default=0)
+
 
     def __str__(self):
         return f"{self.item}"
 
+class Order(models.Model):
+    user = models.ForeignKey(User,on_delete=models.CASCADE)
+    items = models.ManyToManyField(OrderItem)
+    ordered = models.BooleanField()
+    total = models.FloatField(default=0)
+
+class CartItem(models.Model):
+    user = models.ForeignKey(User,on_delete=models.CASCADE, related_name="user_cart")
+    item = models.ForeignKey(MenuItem1, on_delete=models.CASCADE, related_name="cartitem_menuitem1")
+    size = models.CharField(max_length=64)
+    toppings = models.ManyToManyField(Topping, related_name="cartitem_toppings", blank="True")
+    subs_extra = models.ManyToManyField(Sub_Extra, related_name="cartitem_subsextras", blank="True")
+    price = models.FloatField(default=0)
+
+
+ 

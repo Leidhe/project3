@@ -11635,14 +11635,14 @@ textarea.form-control {
 }
 
 table.greyGridTable {
-  border: 2px solid #FFFFFF;
+  border: 2px solid #c49b63;
   width: 100%;
   text-align: center;
   border-collapse: collapse;
 }
 
 table.greyGridTable td, table.greyGridTable th {
-  border: 2px solid #FFFFFF;
+  border: 2px solid #c49b63;
   padding: 3px 0px;
 }
 
@@ -11654,20 +11654,20 @@ table.greyGridTable tbody td {
 }
 
 table.greyGridTable td:nth-child(even) {
-  background: #EBEBEB;
+  background: #c49b63;
 }
 
 table.greyGridTable thead {
-  background: #FFFFFF;
-  border-bottom: 4px solid #333333;
+  background: #c49b63;
+  border-bottom: 4px solid #c49b63;
 }
 
 table.greyGridTable thead th {
   font-size: 15px;
   font-weight: bold;
-  color: #333333;
+  color: black;
   text-align: center;
-  border-left: 2px solid #333333;
+  border-left: 2px solid #c49b63;
 }
 
 table.greyGridTable thead th:first-child {
@@ -11677,8 +11677,8 @@ table.greyGridTable thead th:first-child {
 table.greyGridTable tfoot {
   font-size: 14px;
   font-weight: bold;
-  color: #333333;
-  border-top: 4px solid #333333;
+  color: #c49b63;
+  border-top: 4px solid #c49b63;
 }
 
 table.greyGridTable tfoot td {
