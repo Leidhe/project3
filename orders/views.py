@@ -1,8 +1,11 @@
 from django.http import HttpResponse, HttpResponseRedirect, Http404, HttpResponseNotFound
 from django.shortcuts import render, get_object_or_404, get_list_or_404
+from django.urls import reverse
 from itertools import chain
 from django.contrib.auth import authenticate
 from .models import Category, MenuItem1, Topping, Sub_Extra, Order, OrderItem, CartItem
+from decimal import Decimal
+
 
 
 # Create your views here.
@@ -25,9 +28,6 @@ def menu(request):
         }
         return render(request, "orders/menu.html", context)
     return HttpResponseRedirect('/login')
-
-def cart(request):
-    return render(request, "orders/cart.html")
 
 def product(request, product_id):
     if request.user.is_authenticated:
@@ -63,45 +63,84 @@ def product(request, product_id):
     return HttpResponseRedirect('/login')
 
 def add_to_cart(request, item_id):
-    menuitem = MenuItem1.objects.get(pk = item_id)
-    size = request.POST.get("select-size")
-    toppings = request.POST.getlist("checkbox-topping")
-    extras = request.POST.getlist("checkbox-subs")
+    if request.method == "POST":
+        if request.user.is_authenticated:
+            menuitem = MenuItem1.objects.get(pk = item_id)
+            size = request.POST.get("select-size")
+            toppings = request.POST.getlist("checkbox-topping")
+            extras = request.POST.getlist("checkbox-subs")
+            
 
-    print(menuitem)
-    print(size)
-    print(type(size))
-    print(toppings)
-    print(extras)
+            if len(toppings) > menuitem.num_toppings:
+                context = {
+                    'error': "An error has occured",
+                }
+                return render(request, "orders/error.html", context)
 
-    try:
-        cart_item = CartItem.objects.create(user=request.user, item=menuitem, size=size)
-        print(cart_item)
-        if size == 'Small':
-            final_price = menuitem.price_small
-        elif size == 'Large':
-            final_price = menuitem.price_large
-        if toppings:
-            for topping in toppings:
-                final = Topping.objects.get(name=topping)
-                print(final)
-                cart_item.toppings.add(final)
-        if extras:
-            print("hola")
-            for extra in extras:
-                final = Sub_Extra.objects.get(name=extra)
-                final_price += final.price
-                cart_item.subs_extra.add(final)
 
-        cart_item.price = final_price
-        cart_item.save()
+            try:
+                cart_item = CartItem.objects.create(user=request.user, item=menuitem, size=size)
+                if size == 'Small':
+                    final_price = menuitem.price_small
+                elif size == 'Large':
+                    final_price = menuitem.price_large
+                else: 
+                    if menuitem.price_small:
+                        final_price = menuitem.price_small
+                    else:
+                        final_price = menuitem.price_large
 
-    except Exception as e:
-        cart_item.delete()
-        print(type(e))
 
-    return HttpResponseNotFound('<h1>Page not found</h1>')
+                if toppings:
+                    for topping in toppings:
+                        final = Topping.objects.get(name=topping)
+                        print(final)
+                        cart_item.toppings.add(final)
+                if extras:
+                    print("hola")
+                    for extra in extras:
+                        final = Sub_Extra.objects.get(name=extra)
+                        final_price += final.price
+                        cart_item.subs_extra.add(final)
 
-    
+                if final_price <= 0:
+                    return render(request, "orders/error.html", context)
+
+                cart_item.price = final_price
+
+                cart_item.save()
+
+            except Exception:
+                cart_item.delete()
+                context = {
+                    'error': "An error has occured",
+                }
+                return render(request, "orders/error.html", context)
+
+            return HttpResponseRedirect(reverse('cart'))
+        else:
+            return HttpResponseRedirect(reverse('login'))
+
+
+    context = {
+                'error': "Method not allowed",
+            }
+
+    return render(request, "orders/error.html", context)
+
+
+def cart(request):
+    cartitem_list = CartItem.objects.filter(user = request.user).all()
+    total = 0
+    for cartitem in cartitem_list:
+        total += cartitem.price
+
+    total = Decimal(total)
+    total = round(total,2)
+    context={
+        'cartitem_list': cartitem_list,
+        'total': total
+    }
+    return render(request, "orders/cart.html", context)
 
 

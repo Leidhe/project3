@@ -140,7 +140,8 @@
 		</div>
 	</section>
 	{% endif %}
-	<p style="text-align: right; margin-right: 15%;"><button disabled = "true" type="submit" id="add_cart" class="btn btn-primary py-3 px-5">Add to
+	<p style="text-align: right; margin-right: 15%;"><button disabled="true" type="submit" id="add_cart"
+			class="btn btn-primary py-3 px-5">Add to
 			Cart</button>
 	</p>
 </form>
@@ -152,69 +153,62 @@
 
 	var subs_dict = {};
 	{% if item.category.name == "Subs" %}
-		{% for extra in extras %}
-		subs_dict["{{extra.name}}"] = {{ extra.price }};
-		{% endfor %}
+	{% for extra in extras %}
+	subs_dict["{{extra.name}}"] = {{ extra.price }};
+	{% endfor %}
 	{% endif %}
 
 	var num_max_toppings = {{ item.num_toppings }}
 	$(document).ready(function () {
-		
+
 		if (({{ item.num_toppings }}) == 0) {
+		$('#add_cart').attr("disabled", false);
+	}
+	var value = $("#select-size option:selected").text().split(" ");
+	var total = parseFloat(value[1]);
+	$("#total").text(total);
+
+
+	$("input[name=checkbox-topping]").change(function () {
+		if ($("input[name=checkbox-topping]:checked").length == num_max_toppings) {
+			console.log($("input[name=checkbox-topping]:checked").length);
+			$("input[name=checkbox-topping]").not(':checked').prop('disabled', true);
 			$('#add_cart').attr("disabled", false);
 		}
+
+		else if ($("input[name=checkbox-topping]:checked").length == num_max_toppings) {
+			$("input[name=checkbox-topping]").not(':checked').prop('disabled', true);
+			$('#add_cart').attr("disabled", false);
+
+		} else {
+			$("input[name=checkbox-topping]").prop('disabled', false)
+			$('#add_cart').attr("disabled", true);
+
+		}
+	});
+
+	$('input[name=checkbox-subs]').change(function () {
 		var value = $("#select-size option:selected").text().split(" ");
 		var total = parseFloat(value[1]);
+
+		$('input[name=checkbox-subs]:checked').each(function () {
+			total += subs_dict[$(this).val()]
+		});
 		$("#total").text(total);
 
+	});
 
-		$("input[name=checkbox-topping]").change(function () {
-			if ($("input[name=checkbox-topping]:checked").length == num_max_toppings) {
-				console.log($("input[name=checkbox-topping]:checked").length);
-				$("input[name=checkbox-topping]").not(':checked').prop('disabled', true);
-				$('#add_cart').attr("disabled", false);}
+	$('select[id=select-size]').change(function () {
+		var value = $("#select-size option:selected").text().split(" ");
+		var total = parseFloat(value[1]);
 
-			else if($("input[name=checkbox-topping]:checked").length == num_max_toppings){
-				$("input[name=checkbox-topping]").not(':checked').prop('disabled', true);
-				$('#add_cart').attr("disabled", false);
-
-			} else {
-				$("input[name=checkbox-topping]").prop('disabled', false)
-				$('#add_cart').attr("disabled", true);
-
-			}
-			
-
-		});
-		$('input[name=checkbox-subs]').change(function () {
-			var value = $("#select-size option:selected").text().split(" ");
-			console.log(value)
-			var total = parseFloat(value[1]);
-
-			/*$('input[name=checkbox-subs]:checked').each(function () {
-				total += parseFloat($(this).val());
-				console.log(total);
-			});
-			$("#total").text(total);*/
-
-			$('input[name=checkbox-subs]:checked').each(function () {
-				total += subs_dict[$(this).val()]
-			});
-			$("#total").text(total);
-
+		$('input[name=checkbox-subs]:checked').each(function () {
+			total += subs_dict[$(this).val()]
 		});
 
-		$('select[id=select-size]').change(function () {
-			var value = $("#select-size option:selected").text().split(" ");
-			var total = parseFloat(value[1]);
+		$("#total").text(total);
 
-			$('input[name=checkbox-subs]:checked').each(function () {
-				total += subs_dict[$(this).val()]
-			});
-
-			$("#total").text(total);
-
-		});
+	});
 
 	});
 
