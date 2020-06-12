@@ -1826,7 +1826,6 @@ pre code {
   .table-responsive-sm {
     display: block;
     width: 100%;
-    overflow-x: auto;
     -webkit-overflow-scrolling: touch;
     -ms-overflow-style: -ms-autohiding-scrollbar;
   }
@@ -9951,7 +9950,7 @@ h1, h2, h3, h4, h5, .h1, .h2, .h3, .h4, .h5 {
   padding: 16px 20px;
 }
 
-.ftco-cart button, .ftco-cart .form-control {
+.ftco-cart .form-control {
   height: 54px !important;
   text-align: center;
   bordeR: 1px solid rgba(255, 255, 255, 0.1) !important;
@@ -9959,6 +9958,21 @@ h1, h2, h3, h4, h5, .h1, .h2, .h3, .h4, .h5 {
   padding: 0;
 }
 
+.ftco-cart button {
+  height: 54px !important;
+  text-align: center;
+  bordeR: 1px solid rgba(255, 255, 255, 0.1) !important;
+  color: black;
+  padding: 0;
+}
+
+.ftco-cart button:hover {
+  height: 54px !important;
+  text-align: center;
+  bordeR: 1px solid rgba(255, 255, 255, 0.1) !important;
+  color: #c49b63;
+  padding: 0;
+}
 .ftco-cart .form-group {
   position: relative;
 }
@@ -11648,9 +11662,8 @@ table.greyGridTable td, table.greyGridTable th {
 
 table.greyGridTable tbody td {
   font-size: 16px;
-  vertical-align: middle;  
+  vertical-align: middle;
   text-align: left;
-
 }
 
 table.greyGridTable td:nth-child(even) {

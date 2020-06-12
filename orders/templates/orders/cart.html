@@ -23,12 +23,14 @@ Cart
 		</div>
 	</div>
 </section>
+{% if cartitem_list %}
 
 <section class="ftco-section ftco-cart">
 	<div class="container">
 		<div class="row">
 			<div class="col-md-12 ftco-animate">
 				<div class="cart-list">
+					{% csrf_token %}
 					<table class="table">
 						<thead class="thead-primary">
 							<tr class="text-center">
@@ -36,15 +38,17 @@ Cart
 								<th>&nbsp;</th>
 								<th>Product</th>
 								<th>Price</th>
-								<th>Quantity</th>
-								<th>Total</th>
+
 							</tr>
 						</thead>
 						<tbody>
 							{% for cartitem in cartitem_list %}
-
 							<tr class="text-center">
-								<td class="product-remove"><a href="#"><span class="icon-close"></span></a></td>
+								<form id="delete" action="{% url 'delete_to_cart' cartitem.id %} " method="POST">
+								{% csrf_token %}
+								<td class="product-remove"><a class="submit"><span class="icon-close"></span></a>
+								</td>
+								</form>
 
 								<td class="image-prod">
 									<div class="img" style="background-image:url( {{ cartitem.item.image.url }} );">
@@ -52,18 +56,20 @@ Cart
 								</td>
 
 								<td class="product-name">
-									<h3>{{ cartitem.item.category.name }} - {{ cartitem.item.name }} - {{cartitem.size}} </h3>
+									<h3>{{ cartitem.item.category.name }} - {{ cartitem.item.name }} -
+										{{cartitem.size}}
+									</h3>
 									{% if cartitem.toppings.all %}
 									<p style="color: #c49b63; font-weight: bold"> Toppings:</p>
-								
+
 									{% for topping in cartitem.toppings.all %}
 									<p>{{topping.name}}</p>
 									{% endfor %}
 									{% endif %}
 									{% if cartitem.subs_extra.all %}
-									
+
 									<p style="color: #c49b63; font-weight: bold"> Extras:</p>
-								
+
 									{% for subextra in cartitem.subs_extra.all %}
 									<p>{{subextra.name}} - +${{subextra.price}}</p>
 
@@ -71,16 +77,8 @@ Cart
 									{% endif %}
 								</td>
 
-								<td class="price">{{cartitem.price}}</td>
+								<td class="price">${{cartitem.price}}</td>
 
-								<td class="quantity">
-									<div class="input-group mb-3">
-										<input type="text" name="quantity" class="quantity form-control input-number"
-											value="1" min="1" max="100">
-									</div>
-								</td>
-
-								<td class="total">$4.90</td>
 							</tr><!-- END TR-->
 
 							{% endfor %}
@@ -89,91 +87,60 @@ Cart
 				</div>
 			</div>
 		</div>
-		<div class="row justify-content-end">
-			<div class="col col-lg-3 col-md-6 mt-5 cart-wrap ftco-animate">
-				<div class="cart-total mb-3">
-					<h3>Cart Totals</h3>
-					<p class="d-flex">
-						<span>Subtotal</span>
-						<span>$20.60</span>
-					</p>
-					<p class="d-flex">
-						<span>Delivery</span>
-						<span>$0.00</span>
-					</p>
-					<p class="d-flex">
-						<span>Discount</span>
-						<span>$0.00</span>
-					</p>
-					<hr>
-					<p class="d-flex total-price">
-						<span>Total</span>
-						<span>{{total}}</span>
-					</p>
+		<form action="{% url 'checkout' total %}" method="POST">
+			{% csrf_token %}
+			<div class="row justify-content-end">
+				<div class="col col-lg-3 col-md-6 mt-5 cart-wrap ftco-animate">
+					<div class="cart-total mb-3">
+						<h3>Cart Totals</h3>
+						<p class="d-flex">
+							<span>Subtotal</span>
+							<span>${{total}}</span>
+						</p>
+						<p class="d-flex">
+							<span>Delivery</span>
+							<span>$0.00</span>
+						</p>
+						<p class="d-flex">
+							<span>Discount</span>
+							<span>$0.00</span>
+						</p>
+						<hr>
+						<p class="d-flex total-price">
+							<span>Total</span>
+							<span>${{total}}</span>
+						</p>
+					</div>
+					<p class="text-center"><button type="submit" class="btn btn-primary py-3 px-4">Proceed to
+							Checkout</button></p>
 				</div>
-				<p class="text-center"><a href=" {% static 'checkout.html' %} "
-						class="btn btn-primary py-3 px-4">Proceed to Checkout</a></p>
 			</div>
-		</div>
+		</form>
 	</div>
 </section>
-
-<section class="ftco-section">
+{% else %}
+<section class="ftco-menu">
 	<div class="container">
-		<div class="row justify-content-center mb-5 pb-3">
-			<div class="col-md-7 heading-section ftco-animate text-center">
-				<span class="subheading">Discover</span>
-				<h2 class="mb-4">Related products</h2>
-				<p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live
-					the blind texts.</p>
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-md-3">
-				<div class="menu-entry">
-					<a href="#" class="img" style="background-image: url( {% static 'images/menu-1.jpg' %} );"></a>
-					<div class="text text-center pt-4">
-						<h3><a href="#">Coffee Capuccino</a></h3>
-						<p>A small river named Duden flows by their place and supplies</p>
-						<p class="price"><span>$5.90</span></p>
-						<p><a href="#" class="btn btn-primary btn-outline-primary">Add to Cart</a></p>
-					</div>
-				</div>
-			</div>
-			<div class="col-md-3">
-				<div class="menu-entry">
-					<a href="#" class="img" style="background-image: url( {% static 'images/menu-2.jpg' %} );"></a>
-					<div class="text text-center pt-4">
-						<h3><a href="#">Coffee Capuccino</a></h3>
-						<p>A small river named Duden flows by their place and supplies</p>
-						<p class="price"><span>$5.90</span></p>
-						<p><a href="#" class="btn btn-primary btn-outline-primary">Add to Cart</a></p>
-					</div>
-				</div>
-			</div>
-			<div class="col-md-3">
-				<div class="menu-entry">
-					<a href="#" class="img" style="background-image: url( {% static 'images/menu-3.jpg' %} );"></a>
-					<div class="text text-center pt-4">
-						<h3><a href="#">Coffee Capuccino</a></h3>
-						<p>A small river named Duden flows by their place and supplies</p>
-						<p class="price"><span>$5.90</span></p>
-						<p><a href="#" class="btn btn-primary btn-outline-primary">Add to Cart</a></p>
-					</div>
-				</div>
-			</div>
-			<div class="col-md-3">
-				<div class="menu-entry">
-					<a href="#" class="img" style="background-image: url( {% static 'images/menu-4.jpg' %} );"></a>
-					<div class="text text-center pt-4">
-						<h3><a href="#">Coffee Capuccino</a></h3>
-						<p>A small river named Duden flows by their place and supplies</p>
-						<p class="price"><span>$5.90</span></p>
-						<p><a href="#" class="btn btn-primary btn-outline-primary">Add to Cart</a></p>
-					</div>
-				</div>
+		<div class="row justify-content-center mb-5">
+			<div class="col-md-7 heading-section text-center ftco-animate">
+				<span class="subheading">There are no items in the cart.</span>
+				<br>
+				<h2 class="mb-4">Please add some!</h2>
 			</div>
 		</div>
 	</div>
 </section>
+{% endif %}
+
+{% endblock %}
+
+{% block scripts %}
+<script type="text/javascript">
+
+	$(document).ready(function () {
+		$("a.submit").click(function () {
+			document.getElementById("delete").submit();
+		});
+	});
+</script>
 {% endblock %}

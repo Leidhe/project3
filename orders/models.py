@@ -53,8 +53,13 @@ class OrderItem(models.Model):
 class Order(models.Model):
     user = models.ForeignKey(User,on_delete=models.CASCADE)
     items = models.ManyToManyField(OrderItem)
-    ordered = models.BooleanField()
     total = models.FloatField(default=0)
+    street_address = models.CharField(max_length=64)
+    city = models.CharField(max_length=64)
+    postcode = models.CharField(max_length=64)
+    phone_number = models.CharField(max_length=64)
+    created_on = models.DateTimeField(auto_now_add=True)
+
 
 class CartItem(models.Model):
     user = models.ForeignKey(User,on_delete=models.CASCADE, related_name="user_cart")
