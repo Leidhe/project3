@@ -132,4 +132,4 @@ EMAIL_USE_TLS = False
 EMAIL_USE_SSL = True
 EMAIL_PORT = 465
 EMAIL_HOST_USER = 'cs50project3@gmail.com'
-EMAIL_HOST_PASSWORD = 'cs50esperoquefuncione2020.'
+EMAIL_HOST_PASSWORD = os.getenv('PASSWORD')
