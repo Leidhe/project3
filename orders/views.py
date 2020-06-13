@@ -9,9 +9,9 @@ from decimal import Decimal
 from django.conf import settings
 
 
-
 # Create your views here.
 def index(request):
+    
     return render(request, "orders/index.html")
 
 
@@ -36,7 +36,7 @@ def menu(request):
 
 
 def product(request, product_id):
-    if request.user.is_authenticated:
+    if request.user.is_authenticated and request.method == "GET":
         try:
             item = MenuItem1.objects.get(id=product_id)
             if item.category.name == 'Regular Pizza' or item.category.name == 'Sicilian Pizza':
@@ -55,10 +55,9 @@ def product(request, product_id):
                 extras = []
 
         except KeyError:
-            # arreglar
-            return render(request, "product/'product_id'", {"message": "No selection."})
+            return render(request, "orders/error.html", {"message": "No selection."})
         except MenuItem1.DoesNotExist:
-            raise Http404("Menu Item does not exist")
+            return render(request, "orders/error.html", {"message": "Menu Item does not exist"})
 
         context = {
             'item': item,
@@ -165,8 +164,10 @@ def cart(request):
 
 def checkout(request, total):
     if request.method == "POST" and request.user.is_authenticated:
+        cart_list = CartItem.objects.filter(user=request.user)
         context = {
-            'total': total
+            'total': total,
+            'cart_list': cart_list
         }
         return render(request, "orders/checkout.html", context)
 
@@ -189,8 +190,8 @@ def place_order(request):
 
         cart_list = CartItem.objects.filter(user=request.user)
         total = 0
-        for cart_item in cart_list:
-            total += cart_item.price
+        for cartitem in cart_list:
+            total += cartitem.price
 
         try:
             order = Order.objects.create(
@@ -201,41 +202,41 @@ def place_order(request):
                 postcode=postcode,
                 phone_number=phone_number
             )
-            message += "Dear " + request.user.first_name + " " + request.user.last_name + '\n'
-            message += "Here you have your billing address: \n" 
+            message += "Dear " + request.user.first_name + \
+                " " + request.user.last_name + '\n'
+            message += "Here you have your billing address: \n"
             message += "Street address: " + street_address + '\n'
             message += "City: " + city + '\n'
             message += "Postcode: " + postcode + '\n'
             message += "Phone number: " + phone_number + '\n'
 
-
             if cart_list:
                 message += "Items"
 
-                for cart_item in cart_list:
-                    user=request.user
-                    item=cart_item.item
-                    size=cart_item.size
-                    price=cart_item.price
+                for cartitem in cart_list:
+                    user = request.user
+                    item = cartitem.item
+                    size = cartitem.size
+                    price = cartitem.price
 
                     orderitem = OrderItem.objects.create(
-                        user = user,
-                        item = item,
-                        size = size,
-                        price = price,
+                        user=user,
+                        item=item,
+                        size=size,
+                        price=price,
                     )
 
                     message += f' {item.category.name} - {item.name} - {size} - ${price} \n'
 
-                    if cart_item.toppings.all():
+                    if cartitem.toppings.all():
                         message += "Toppings: \n"
-                        for topping in cart_item.toppings.all():
+                        for topping in cartitem.toppings.all():
                             orderitem.toppings.add(topping)
                             message += f'- {topping.name} \n'
-                    
-                    if cart_item.subs_extra.all():
+
+                    if cartitem.subs_extra.all():
                         message += "Extras:"
-                        for sub_extra in cart_item.subs_extra.all():
+                        for sub_extra in cartitem.subs_extra.all():
                             orderitem.subs_extra.add(sub_extra)
                             message += f'- {sub_extra.name} \n'
 
@@ -252,7 +253,6 @@ def place_order(request):
                 'error': "An error has ocurred",
             }
         return render(request, "orders/error.html", context)
-    print("aqui")
     context = {
         'error': "An error has ocurred",
     }
@@ -302,7 +302,7 @@ def send_email(request, subject, description, user_email):
             settings.EMAIL_HOST_USER,
             [user_email]
         )
-           
+
         email.send()
 
     except BadHeaderError:
@@ -311,3 +311,16 @@ def send_email(request, subject, description, user_email):
         }
         return render(request, "orders/error.html", context)
 
+
+def view_all_orders(request):
+    if request.user.is_authenticated and request.method == "GET" and request.user.is_superuser:
+        orders = Order.objects.all()
+        context = {
+            "orders": orders
+        }
+
+        return render(request, "orders/admin_orders.html", context)
+    context = {
+        'error': "You don't have access to this site",
+    }
+    return render(request, "orders/error.html", context)

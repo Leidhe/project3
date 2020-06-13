@@ -14,6 +14,8 @@ urlpatterns = [
     path("place_order", views.place_order, name="place_order"),
     path("orders", views.orders, name="orders"),
     path("view_order/<int:order_id>", views.view_order, name="view_order"),
+    path("view_all_orders/", views.view_all_orders, name="view_all_orders"),
+
 
 
 ]

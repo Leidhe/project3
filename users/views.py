@@ -55,6 +55,9 @@ def register(request):
         return render(request, "users/register.html", {'form': form})
 
 def sign_in(request):
+    if request.user.is_authenticated:
+        return HttpResponseRedirect('/')
+
     form = UserLoginForm()
     if request.method == "POST":
         form = UserLoginForm(data=request.POST)
@@ -71,5 +74,8 @@ def sign_in(request):
     return render(request, "users/login.html", {'form': form})
 
 def fun_logout(request):
-    logout(request)
-    return redirect('/')
+    if request.user.is_authenticated:
+        logout(request)
+        return redirect('/')
+    else: 
+        return render(request, "orders/error.html", {'message': "An error has ocurred"})

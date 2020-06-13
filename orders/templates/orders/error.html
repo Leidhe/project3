@@ -1,0 +1,19 @@
+{% extends "orders/base.html" %}
+
+{% block title %}
+Error
+{% endblock %}
+
+{% block body %}
+<section class="ftco-section">
+    <div class="container" style="text-align: center;">
+        <h3>Error</h3>
+            {{ message }}
+        <br>
+        <a href="{% url 'index' %}">Return to Home</a>
+        </div>
+    </div>
+
+</section>
+
+{% endblock %}
