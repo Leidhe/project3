@@ -3,8 +3,11 @@ from django.shortcuts import render, get_object_or_404, get_list_or_404
 from django.urls import reverse
 from itertools import chain
 from django.contrib.auth import authenticate
+from django.core.mail import send_mail, BadHeaderError, EmailMessage
 from .models import Category, MenuItem1, Topping, Sub_Extra, Order, OrderItem, CartItem
 from decimal import Decimal
+from django.conf import settings
+
 
 
 # Create your views here.
@@ -180,6 +183,9 @@ def place_order(request):
         city = request.POST.get("city")
         postcode = request.POST.get("postcode")
         phone_number = request.POST.get("phone")
+        user_email = request.user.email
+        subject = "Your order from Pinocchio's Pizza & Subs"
+        message = ""
 
         cart_list = CartItem.objects.filter(user=request.user)
         total = 0
@@ -195,22 +201,49 @@ def place_order(request):
                 postcode=postcode,
                 phone_number=phone_number
             )
+            message += "Dear " + request.user.first_name + " " + request.user.last_name + '\n'
+            message += "Here you have your billing address: \n" 
+            message += "Street address: " + street_address + '\n'
+            message += "City: " + city + '\n'
+            message += "Postcode: " + postcode + '\n'
+            message += "Phone number: " + phone_number + '\n'
+
 
             if cart_list:
+                message += "Items"
+
                 for cart_item in cart_list:
+                    user=request.user
+                    item=cart_item.item
+                    size=cart_item.size
+                    price=cart_item.price
+
                     orderitem = OrderItem.objects.create(
-                        user=request.user,
-                        item=cart_item.item,
-                        size=cart_item.size,
-                        price=cart_item.price
+                        user = user,
+                        item = item,
+                        size = size,
+                        price = price,
                     )
-                    for topping in cart_item.toppings.all():
-                        orderitem.toppings.add(topping)
-                    for sub_extra in cart_item.subs_extra.all():
-                        orderitem.subs_extra.add(sub_extra)
+
+                    message += f' {item.category.name} - {item.name} - {size} - ${price} \n'
+
+                    if cart_item.toppings.all():
+                        message += "Toppings: \n"
+                        for topping in cart_item.toppings.all():
+                            orderitem.toppings.add(topping)
+                            message += f'- {topping.name} \n'
+                    
+                    if cart_item.subs_extra.all():
+                        message += "Extras:"
+                        for sub_extra in cart_item.subs_extra.all():
+                            orderitem.subs_extra.add(sub_extra)
+                            message += f'- {sub_extra.name} \n'
 
                     order.items.add(orderitem)
+                send_email(request, subject, message, user_email)
+
                 cart_list.delete()
+
             return HttpResponseRedirect('/orders')
         except Exception as e:
             print(e)
@@ -250,8 +283,7 @@ def view_order(request, order_id):
                 "order": order
             }
             return render(request, "orders/single_order.html", context)
-        except Exception as e:
-            print(e)
+        except Order.DoesNotExist:
             context = {
                 'error': "Order not found",
             }
@@ -260,4 +292,22 @@ def view_order(request, order_id):
         'error': "An error has ocurred",
     }
     return render(request, "orders/error.html", context)
+
+
+def send_email(request, subject, description, user_email):
+    try:
+        email = EmailMessage(
+            subject,
+            description,
+            settings.EMAIL_HOST_USER,
+            [user_email]
+        )
+           
+        email.send()
+
+    except BadHeaderError:
+        context = {
+            'error': "An error has ocurred",
+        }
+        return render(request, "orders/error.html", context)
 
