@@ -44,7 +44,7 @@ class OrderItem(models.Model):
     size = models.CharField(max_length=64)
     toppings = models.ManyToManyField(Topping, related_name="orderitem_toppings", blank="True")
     subs_extra = models.ManyToManyField(Sub_Extra, related_name="orderitem_subsextras", blank="True")
-    price = models.FloatField(default=0)
+    price = models.DecimalField(max_digits=10, decimal_places=2)
 
 
     def __str__(self):
@@ -53,7 +53,7 @@ class OrderItem(models.Model):
 class Order(models.Model):
     user = models.ForeignKey(User,on_delete=models.CASCADE)
     items = models.ManyToManyField(OrderItem)
-    total = models.FloatField(default=0)
+    total = models.DecimalField(max_digits=10, decimal_places=2)
     street_address = models.CharField(max_length=64)
     city = models.CharField(max_length=64)
     postcode = models.CharField(max_length=64)
@@ -67,7 +67,7 @@ class CartItem(models.Model):
     size = models.CharField(max_length=64)
     toppings = models.ManyToManyField(Topping, related_name="cartitem_toppings", blank="True")
     subs_extra = models.ManyToManyField(Sub_Extra, related_name="cartitem_subsextras", blank="True")
-    price = models.FloatField(default=0)
+    price = models.DecimalField(max_digits=10, decimal_places=2)
 
 
  

@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block title %}
-Cart
+Order
 {% endblock %}
 {% block body %}
 <section class="home-slider owl-carousel">
@@ -15,7 +15,7 @@ Cart
 
 				<div class="col-md-7 col-sm-12 text-center ftco-animate">
 					<h1 class="mb-3 mt-5 bread">Order created on {{order.created_on}}</h1>
-					<p class="breadcrumbs"><span class="mr-2"><a href=" {% static 'index.html' %} ">Home</a></span>
+					<p class="breadcrumbs"><span class="mr-2"><a href="{% url 'index' %}">Home</a></span>
 						<span>Cart</span></p>
 				</div>
 

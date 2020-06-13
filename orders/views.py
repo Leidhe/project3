@@ -280,7 +280,7 @@ def view_order(request, order_id):
         try:
             order = Order.objects.get(id=order_id)
             context = {
-                "order": order
+                "order": order,
             }
             return render(request, "orders/single_order.html", context)
         except Order.DoesNotExist:
