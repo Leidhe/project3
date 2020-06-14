@@ -87,6 +87,16 @@ Order
 								<h4>{{order.phone_number}}</h4>
 							</td>
 						</tr>
+						<tr class="text-center">
+							<th class="thead-primary">
+								<h4>
+									Total
+								</h4>
+							</th>
+							<td>
+								<h4>${{order.total}}</h4>
+							</td>
+						</tr>
 					</table>
 				</div>
 			</div>
@@ -128,6 +138,7 @@ Order
 
 									{% endfor %}
 									{% endif %}
+									<h5>Price: ${{item.price}}</h5>
 							</td>
 						</tr>
 						{% endfor %}
