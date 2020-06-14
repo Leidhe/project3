@@ -89,3 +89,8 @@ EMAIL_HOST_PASSWORD is an environment variable since it contains the password of
 
 I have also used to send email the EmailMessage class provided by Django which creates an EmailMessage object which is then sent using the .send () method.
 
+
+### Special Pizza
+
+Is a pizza with Pepperoni, Mushrooms, Onions, Ham and Hamburguer
+
