@@ -83,7 +83,7 @@ Menu
 					<div class="img" style="background-image: url('{{ item.image.url }}');"></div>
 					<div class="desc pl-3">
 						<div class="d-flex text align-items-center">
-							<h3><a style="color: white;" href="{% url 'product' item.id %}">{{ item.name }}</a></h3>
+							<h3><a style="color: white; text-decoration: none !important; " href="{% url 'product' item.id %}">{{ item.name }}</a></h3>
 							{% if item.price_small and item.price_large %}
 							<span class="price">Small: ${{ item.price_small }}</span>
 							<span class="price">Large: ${{ item.price_large }}</span>
