@@ -97,7 +97,15 @@ Product
 							<tbody>
 								{% for extra in extras %}
 								<tr>
-									{% if item.category.name != "Subs" %}
+									{% if item.category.name == "Regular Pizza" or item.category.name == "Sicilian Pizza" %}
+									{% if item.name == "Special" %}
+									<td style="padding-left: 45%;">
+
+										<span name="extras" style="color: white;">{{extra.name}}</span>
+
+									</td>
+									{% else %}
+
 									<td style="padding-left: 45%;">
 
 										<label style="color: white;"><input type="checkbox" value="{{extra.name}}"
@@ -105,6 +113,7 @@ Product
 												style="margin-right: 10px;">{{extra.name}}</label>
 
 									</td>
+									{% endif %}
 									{% endif %}
 									{% if item.category.name == "Subs" %}
 									<td style="padding-left: 23%;">
@@ -151,7 +160,7 @@ Product
 	var num_max_toppings = {{ item.num_toppings }}
 	$(document).ready(function () {
 
-		if (({{ item.num_toppings }}) == 0) {
+		if (({{ item.num_toppings }} == 0) || ("{{ item.name }}" == "Special")) {
 		$('#add_cart').attr("disabled", false);
 	}
 	var value = $("#select-size option:selected").text().split(" ");

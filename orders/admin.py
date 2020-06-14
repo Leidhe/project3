@@ -9,10 +9,27 @@ class CategoryAdmin(admin.ModelAdmin):
 admin.site.register(Category, CategoryAdmin)
 class MenuItemAdmin(admin.ModelAdmin):
     list_display = ['category', 'name', 'price_small', 'price_large']
+
+class Subs_ExtraAdmin(admin.ModelAdmin):
+    list_display = ['name', 'price']    
+
+class ToppingsAdmin(admin.ModelAdmin):
+    list_display = ['name']  
+
+class OrdersAdmin(admin.ModelAdmin):
+    list_display = ['user', 'total', 'created_on']  
+
+class OrderItemAdmin(admin.ModelAdmin):
+    list_display = ['user', 'item', 'size', 'price']  
+
+class CartItemAdmin(admin.ModelAdmin):
+    list_display = ['user', 'item', 'size', 'price'] 
+
+
 admin.site.register(MenuItem1, MenuItemAdmin)
-admin.site.register(Topping)
-admin.site.register(Sub_Extra)
-admin.site.register(Order)
-admin.site.register(OrderItem)
-admin.site.register(CartItem)
+admin.site.register(Topping, ToppingsAdmin)
+admin.site.register(Sub_Extra, Subs_ExtraAdmin)
+admin.site.register(Order, OrdersAdmin)
+admin.site.register(OrderItem, OrderItemAdmin)
+admin.site.register(CartItem, CartItemAdmin)
 

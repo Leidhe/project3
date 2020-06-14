@@ -39,8 +39,24 @@ def product(request, product_id):
     if request.user.is_authenticated and request.method == "GET":
         try:
             item = MenuItem1.objects.get(id=product_id)
+            
             if item.category.name == 'Regular Pizza' or item.category.name == 'Sicilian Pizza':
-                if item.num_toppings > 0:
+                if item.name == "Special":
+                    pepperoni = Topping.objects.get(name = "Pepperoni")
+                    mushrooms = Topping.objects.get(name = "Mushrooms")
+                    onions = Topping.objects.get(name = "Onions")
+                    ham = Topping.objects.get(name = "Ham")
+                    hamburguer = Topping.objects.get(name = "Hamburger")
+                    extras = []
+
+                    extras.append(pepperoni)
+                    extras.append(mushrooms)
+                    extras.append(onions)
+                    extras.append(ham)
+                    extras.append(hamburguer)
+                    
+                    title = "Contains: "
+                elif item.num_toppings > 0:
                     extras = Topping.objects.all()
                     title = "Choose your toppings"
                 else:
@@ -58,6 +74,8 @@ def product(request, product_id):
             return render(request, "orders/error.html", {"message": "No selection."})
         except MenuItem1.DoesNotExist:
             return render(request, "orders/error.html", {"message": "Menu Item does not exist"})
+        except Topping.DoesNotExist:
+            return render(request, "orders/error.html", {"message": "Topping does not exist"})
 
         context = {
             'item': item,
@@ -73,6 +91,8 @@ def add_to_cart(request, item_id):
         menuitem = MenuItem1.objects.get(pk=item_id)
         size = request.POST.get("select-size")
         toppings = request.POST.getlist("checkbox-topping")
+        if menuitem.name == "Special":
+            toppings = ['Pepperoni', 'Mushrooms', 'Onions', 'Ham', 'Hamburger']
         extras = request.POST.getlist("checkbox-subs")
 
         if len(toppings) > menuitem.num_toppings:
