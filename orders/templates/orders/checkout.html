@@ -46,7 +46,7 @@ Home
           <h5 style="color:black">Your items:</h5>
           {% for cartitem in cart_list %}
           <strong>{{ cartitem.item.category.name }} - {{ cartitem.item.name }} -
-            {{cartitem.size}}
+            {{cartitem.size}} <br>
           </strong>
           {% if cartitem.toppings.all %}
           <p style="color: #c49b63; font-weight: bold"> Toppings:</p>
