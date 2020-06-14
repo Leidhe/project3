@@ -1,6 +1,11 @@
 # Project 3
 Web Programming with Python and JavaScript
 
+## You can see this project on:
+### https://cs50project3pizza.herokuapp.com/
+
+#### For administrations, go to /admin and credentials are admin-admin
+
 ## Structure
 This project contains the main directory (called pizza) and two Django projects: Users and orders
 
